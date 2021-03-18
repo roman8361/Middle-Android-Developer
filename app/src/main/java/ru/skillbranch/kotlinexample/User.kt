@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.SecureRandom
+import java.util.*
 
 class User(
     private val firstName: String,
@@ -33,7 +34,7 @@ class User(
     private var _login: String? = null
     var login: String
         set(value) {
-            _login = value.toLowerCase()
+            _login = value.toLowerCase(Locale.getDefault())
         }
         get() = _login!!
 
@@ -120,6 +121,7 @@ class User(
     fun generateAccessCode(): String {
         val possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
+//       return  (0..5).map { possible.random() }.joinToString { "" }
         return StringBuilder().apply {
             repeat(6) {
                 (possible.indices).random().also { index -> append(possible[index]) }
@@ -133,15 +135,12 @@ class User(
 
     companion object Factory {
         fun makeUser(
-            fullName: String,
-            email: String? = null,
-            password: String? = null,
-            phone: String? = null
+            fullName: String, email: String? = null, password: String? = null, phone: String? = null
         ): User {
             val (firstName, lastName) = fullName.fullNameToPair()
 
             return when {
-                !phone.isNullOrBlank() -> User(firstName, lastName, phone)
+                !phone.isNullOrBlank() -> User(firstName, lastName, validPhoneNumber(phone))
                 !email.isNullOrBlank() && !password.isNullOrBlank() -> User(
                     firstName,
                     lastName,
@@ -165,6 +164,14 @@ class User(
                         )
                     }
                 }
+
+        private fun validPhoneNumber(phoneNumber: String): String {
+            if (phoneNumber.any { it.isLetter() })
+                throw IllegalArgumentException("Enter a valid phone number starting with a + and containing 11 digits")
+            val result = phoneNumber.filter { it.isDigit() }
+            if (result.length == 11) return "+$result"
+            throw IllegalArgumentException("Phone number $phoneNumber not valid")
+        }
     }
 
 }
