@@ -44,6 +44,10 @@ class User(
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     var accessCode: String? = null
+        set(value) {
+            field = value
+            if (value != null) passwordHash = encrypt(value)
+        }
 
     //For email
     constructor(

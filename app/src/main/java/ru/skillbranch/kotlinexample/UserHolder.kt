@@ -41,5 +41,5 @@ object UserHolder {
         else this
     }
 
-    }
+}
 
