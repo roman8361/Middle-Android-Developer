@@ -8,7 +8,7 @@ object UserHolder {
 
     fun registerUser(fullName: String, email: String, password: String):
             User = User.makeUser(fullName, email = email, password = password)
-        .also { user -> if (map.containsKey(user.login)) throw IllegalArgumentException("A user with this login already exists") }
+        .also { user -> if (map.containsKey(user.login)) throw IllegalArgumentException("A user with this email already exists") }
         .also { user -> map[user.login] = user }
 
     fun loginUser(login: String, password: String): String? {
