@@ -26,7 +26,7 @@ class User(
             .map { it.first().toUpperCase() }
             .joinToString(" ")
 
-    private var phone: String? = null
+    var phone: String? = null
         set(value) {
             field = value?.replace("""[^+\d]""".toRegex(), "")
         }
